@@ -1,31 +1,42 @@
 package Graph;
 
+import Graph.Q1.Graph;
+import Graph.Q2.GraphQ2;
 import Graph.Q3.GraphQ3;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) {
-        /*System.out.println("Question 1 =====================");
-        Graph graph = new Graph();
-        graph.addNode(5);
-        graph.addNextToNode(5,7);
-        graph.addNextToNode(7,8);
-        graph.addNextToNode(10,15);
-
+        /*System.out.println("\n===================== Question 1 =====================");
+        Graph graph =creationGrapheQ1(5);
         int nb = graph.getNbConnectedComp();
+        HashMap<Integer, List<Integer>> listAdja =graph.getListAdjacency();
+        for(Map.Entry<Integer, List<Integer>> entry : listAdja.entrySet()){
+            int key = entry.getKey();
+            List<Integer> value = entry.getValue();
+            System.out.println("Le sommet :"+key+" a comme voisins :"+ value.toString());
+        }
         System.out.println("Number of connected component(s) : "+nb);
-
         boolean isC = true;
         if(nb>1){
             isC = false;
         }
         System.out.println("Is the graph connected ? "+isC);
+        */
+        System.out.println("\n===================== Question 2 =====================");
+        GraphQ2 graphQ2= creationGrapheQ2(5);
 
-        System.out.println("Question 2 =====================");
 
-        GraphQ2 graphQ2= new GraphQ2();
+        /*
+
+
+
 
         graphQ2.addNode(1);
         //A
@@ -50,7 +61,6 @@ public class Main {
         System.out.println(res.getKey().toString());
         System.out.println(res.getValue());
 
-         */
         System.out.println("Question 2 =====================");
         GraphQ3 graphQ3= new GraphQ3();
 
@@ -75,12 +85,99 @@ public class Main {
         System.out.println(resDij.toString());
         System.out.println(poids);
 
-
-
+         */
 
 
 
     }
 
+    public static Graph creationGrapheQ1(int nbSommets){
+        Graph graph = new Graph();
+
+        //(n*(n-1) ) /2
+        for (int i = 0; i < nbSommets; i++) {
+            graph.addNode(i);
+        }
+        int nbArcs=(int) (Math.random()* (nbSommets*(nbSommets-1))/2);
+
+        for (int i = 0; i < nbArcs; i++) {
+            boolean bonArc=false;
+            while (!bonArc){
+                int source = (int) (Math.random()*(nbSommets));
+                int destination = (int) (Math.random()*(nbSommets));
+                HashMap<Integer, List<Integer>> listAdja = graph.getListAdjacency();
+                if(!listAdja.get(source).contains(destination) && source!=destination){
+                    bonArc=true;
+                    graph.addNextToNode(source,destination);
+
+                }
+            }
+        }
+
+        return graph;
+    }
+
+    public static GraphQ2 creationGrapheQ2(int nbSommets){
+        GraphQ2 graph = new GraphQ2();
+
+        //(n*(n-1) ) /2
+        for (int i = 0; i < nbSommets; i++) {
+            graph.addNode(i);
+        }
+
+        int nbArcs=(int) (Math.random()* (nbSommets*(nbSommets-1))/2);
+        System.out.println(nbArcs);
+        for (int i = 0; i < nbArcs; i++) {
+            boolean bonArc=false;
+            while (!bonArc){
+
+                int source = (int) (Math.random()*(nbSommets));
+                int destination = (int) (Math.random()*(nbSommets));
+                if(source!=destination){
+                    HashMap<Integer, List<Pair<Integer, Integer>>> matrice = graph.getMatrice();
+                    List<Pair<Integer, Integer>> voisins= matrice.get(source);
+                    int j =0;
+                    boolean voisinsTrouve = false;
+                    for (Pair<Integer, Integer> v: voisins
+                    ) {
+                        if(v.getKey() == destination) {
+                            voisinsTrouve= true;
+                        }
+                    }
+                    if(!voisinsTrouve ){
+                        bonArc=true;
+                        int poids = (int) (Math.random()*(19))+1;
+                        graph.addNextToNode(source,new Pair<>(destination,poids));
+                    }
+                }
+
+            }
+        }
+
+        return graph;
+    }
+
+    public static boolean graph2toGraph1(GraphQ2 g2){
+        HashMap<Integer, List<Pair<Integer, Integer>>> matrice = g2.getMatrice();
+        Graph g= new Graph();
+        for(Map.Entry<Integer,  List<Pair<Integer, Integer>>> entry : matrice.entrySet()) {
+
+            int key = entry.getKey();
+            List<Pair<Integer, Integer>> values = entry.getValue();
+            for (Pair<Integer, Integer> p: values
+                 ) {
+                g.addNextToNode(key,p.getKey());
+            }
+
+        }
+        int nb = g.getNbConnectedComp();
+        System.out.println("Number of connected component(s) : "+nb);
+        boolean isC = true;
+        if(nb>1){
+            isC = false;
+        }
+        return isC;
+
+    }
 
 }
