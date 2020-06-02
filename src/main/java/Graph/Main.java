@@ -1,10 +1,9 @@
 package Graph;
 
-import Graph.Q1.Graph;
-import Graph.Q2.GraphQ2;
-import javafx.util.Pair;
+import Graph.Q3.GraphQ3;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,7 +22,7 @@ public class Main {
             isC = false;
         }
         System.out.println("Is the graph connected ? "+isC);
-*/
+
         System.out.println("Question 2 =====================");
 
         GraphQ2 graphQ2= new GraphQ2();
@@ -47,9 +46,34 @@ public class Main {
         //F
         graphQ2.addNextToNode(6,7,9);
 
-        Pair<ArrayList<Integer>,Integer> res= graphQ2.Prim(1);
+        Pair<ArrayList<Integer>,Integer> res= graphQ2.prim(1);
         System.out.println(res.getKey().toString());
         System.out.println(res.getValue());
+
+         */
+        System.out.println("Question 2 =====================");
+        GraphQ3 graphQ3= new GraphQ3();
+
+        graphQ3.addNode(1);
+        graphQ3.addNode(2);
+        graphQ3.addNode(3);
+        graphQ3.addNode(4);
+        graphQ3.addNode(5);
+
+        graphQ3.addNextToNode(1,5,3);
+        graphQ3.addNextToNode(1,3,18);
+        graphQ3.addNextToNode(5,2,10);
+        graphQ3.addNextToNode(5,4,2);
+        graphQ3.addNextToNode(4,2,1);
+        graphQ3.addNextToNode(2,3,4);
+        graphQ3.addNextToNode(2,1,8);
+
+        HashMap resDij = graphQ3.dijkstra(1);
+        AtomicInteger poids = new AtomicInteger();
+        resDij.forEach((k,v)-> poids.addAndGet((Integer) v));
+
+        System.out.println(resDij.toString());
+        System.out.println(poids);
 
 
 
@@ -57,4 +81,6 @@ public class Main {
 
 
     }
+
+
 }

@@ -1,24 +1,23 @@
-package Graph.Q2;
+package Graph.Q3;
 
 
 
 
 import javafx.util.Pair;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
  * Class represent graph with a list of adjacency
  */
-public class GraphQ2 {
+public class GraphQ3 {
     private HashMap<Integer, List<Pair<Integer,Integer>>> matrice;
     private HashMap<Integer, Boolean> visited;
 
     /**
      * Constructor to null
      */
-    public GraphQ2() {
+    public GraphQ3() {
         this.matrice = new HashMap<>();
         this.visited = new HashMap<>();
     }
@@ -60,7 +59,6 @@ public class GraphQ2 {
         if(!existe){
             voisins.add(p_pair);
             Pair<Integer, Integer> new_pair = new Pair<>(node,p_pair.getValue());
-            this.addNextToNode(p_pair.getKey(),new_pair);
             return true;
         }else{
             return false;
@@ -144,4 +142,62 @@ public class GraphQ2 {
 
         return new Pair<>(tree,cost);
     }
+
+    public HashMap dijkstra (int source){
+
+        int poidsCourant = 0;
+        // liste des sommets non parcourus avec le poids du chemin pour y arriver
+        HashMap<Integer,Integer> poids = new HashMap<>();
+        //Liste des sommets parcourus
+        HashMap<Integer,Integer> list = new HashMap<>();
+        //La distance ini est de 0
+        poids.put(source,0);
+        // Tous les sommets
+        Set<Integer> keys = matrice.keySet();
+        //On met infini dans les chemins non parcourus
+        for (int k: keys
+             ) {
+            if(k!=source){
+                poids.put(k,Integer.MAX_VALUE);
+            }
+        }
+
+        int courant = source;
+        // Tant qu'on a pas parcourus tous les sommets
+        while (poids.size() != 0){
+            //On recupere les voisins du courant
+            List<Pair<Integer,Integer>> voisins = matrice.get(courant);
+            // Pour chaque voisins on change nos poids de chemin
+            for (Pair<Integer,Integer> v:voisins
+                 ) {
+                int v_key = v.getKey();
+                int v_value = v.getValue();
+                int poidsChemin = v_value+poidsCourant;
+                //On change si on ne l'a pas deja parcourus
+                if( !list.containsKey(v_key) && poidsChemin< poids.get(v_key)){
+                    poids.put(v_key,poidsChemin);
+                }
+
+            }
+            //on a parcourus ce sommet
+            list.put(courant,poids.get(courant));
+            poids.remove(courant);
+            int min = Integer.MAX_VALUE;
+            //On cherche le sommet suivant (poids minimum)
+            for(Map.Entry<Integer, Integer> entry : poids.entrySet()) {
+
+                int key = entry.getKey();
+                int value = entry.getValue();
+                if(value < min){
+                    min=value;
+                    courant=key;
+                }
+
+            }
+            poidsCourant=min;
+        }
+
+        return list;
+    }
+
 }
