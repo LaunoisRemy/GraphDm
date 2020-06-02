@@ -117,7 +117,8 @@ public class GraphQ2 {
         // Poids total
         int cost = 0;
         //Tant que on n'a pas tous les sommets dans notre arbre
-        while (tree.size() != matrice.keySet().size()) {
+        while (tree.size() != matrice.keySet().size()) { //TODO normalement bizzare
+            System.out.println(tree.toString());
             // Tous les voisins de current
             List<Pair<Integer,Integer>> edges = matrice.get(current);
             // On ajoute tous les voisins

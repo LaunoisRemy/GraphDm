@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) {
-        /*System.out.println("\n===================== Question 1 =====================");
+        System.out.println("\n===================== Question 1 =====================");
         Graph graph =creationGrapheQ1(5);
         int nb = graph.getNbConnectedComp();
         HashMap<Integer, List<Integer>> listAdja =graph.getListAdjacency();
@@ -28,10 +28,18 @@ public class Main {
             isC = false;
         }
         System.out.println("Is the graph connected ? "+isC);
-        */
+        /*
         System.out.println("\n===================== Question 2 =====================");
         GraphQ2 graphQ2= creationGrapheQ2(5);
+        System.out.println(graphQ2.getMatrice());
 
+        if(!graph2toGraph1(graphQ2)){
+            System.out.println("Ca va bugger");
+        }else{
+            Pair<ArrayList<Integer>,Integer> res= graphQ2.prim(1);
+            System.out.println(res.getKey().toString());
+            System.out.println(res.getValue());
+        };
 
         /*
 
@@ -170,14 +178,21 @@ public class Main {
             }
 
         }
+
         int nb = g.getNbConnectedComp();
         System.out.println("Number of connected component(s) : "+nb);
         boolean isC = true;
         if(nb>1){
             isC = false;
         }
-        return isC;
+        HashMap<Integer, List<Integer>> listAdja =g.getListAdjacency();
+        for(Map.Entry<Integer, List<Integer>> entry : listAdja.entrySet()){
+            int key = entry.getKey();
+            List<Integer> value = entry.getValue();
+            System.out.println("Le sommet :"+key+" a comme voisins :"+ value.toString());
+        }
 
+        return isC;
     }
 
 }
