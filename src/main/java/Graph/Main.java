@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) {
-
+        /*
         System.out.println("\n===================== Question 1 =====================");
         Graph graph =creationGrapheQ1(5);
         int nb = graph.getNbConnectedComp();
@@ -30,7 +30,8 @@ public class Main {
             System.out.println("L'arbre couvrant minimale est :" + res.getKey().toString());
             System.out.println("Le poids :" +res.getValue());
         }
-
+*/
+        int nbSommets = 5;
 
         System.out.println(" \n===================== Question 3 =====================");
         Graph graphQ3= creationGrapheQ2Q3(nbSommets,true);
@@ -40,12 +41,11 @@ public class Main {
         System.out.println("la source est = "+ sourceQ3);
 
         System.out.println(graphQ3.toString());
-        HashMap<Integer,Integer> resDij = graphQ3.dijkstra(sourceQ3);
+        HashMap<Integer, CheDis> resDij = graphQ3.dijkstra(sourceQ3);
         if(resDij !=null){
-            AtomicInteger poids = new AtomicInteger();
-            resDij.forEach((k,v)-> poids.addAndGet((Integer) v));
-            System.out.println(resDij.toString());
-            System.out.println(poids);
+            resDij.forEach((k,v)-> {
+                System.out.println("Chemin : "+ sourceQ3 + " ->" + k + ":"+v);
+            });
         }else {
             System.out.println("Source sans voisins");
         }

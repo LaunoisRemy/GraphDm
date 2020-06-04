@@ -1,8 +1,5 @@
 package Graph;
 
-
-
-
 import javafx.util.Pair;
 
 import java.util.*;
@@ -87,7 +84,6 @@ public class Graph {
         }
     }
 
-
     /**
      *
      * @param source
@@ -95,9 +91,7 @@ public class Graph {
     public void breadthFirstSearch(int source) {
         Queue<Object> queue = new LinkedList<Object>();
         queue.add(source);
-
         this.visited.put(source,true);
-
         while (queue.size() != 0) {
             int current = (int) queue.poll();
             // Tous les voisins
@@ -114,7 +108,6 @@ public class Graph {
     }
 
     /**
-     *
      * @return
      */
     public int getNbConnectedComp() {
@@ -130,7 +123,6 @@ public class Graph {
     }
 
     /**
-     *
      * @param nb
      * @return
      */
@@ -138,9 +130,7 @@ public class Graph {
         return nb == 1;
     }
 
-
     /**
-     *
      * @param source
      * @return
      */
@@ -155,7 +145,6 @@ public class Graph {
         ArrayList<Integer> tree = new ArrayList<>();
         // Tous les arcs dont le sommet n'est pas dans tree
         ArrayList<Pair<Integer,Integer>> allEdges=new ArrayList<>();
-
         int current =source;
         tree.add(source);
         // Poids total
@@ -170,11 +159,9 @@ public class Graph {
             // On supprime ceux dont on a deja un lien
             allEdges.removeIf(p -> tree.contains(p.getKey()));
             assert goodAdd = false;
-
             // On trouve le minimum des voisins
             Optional<Pair<Integer, Integer>> min = allEdges.stream()
                     .min(Comparator.comparing(Pair::getValue));
-
             if(min.isPresent()){
                 //On ajoute le poids minimum
                 cost+=min.get().getValue();
@@ -183,79 +170,87 @@ public class Graph {
                 //on change le prochain current
                 current=min.get().getKey();
             }
-
         }
         return new Pair<>(tree,cost);
     }
+    public HashMap<Integer, CheDis> dijkstra (int source){
 
-    /**
-     *
-     * @param source
-     * @return
-     */
-    public HashMap<Integer,Integer> dijkstra (int source){
+        HashMap<Integer, Deque<Integer>> tab = new HashMap<>();
 
-        int poidsCourant = 0;
-        // liste des sommets non parcourus avec le poids du chemin pour y arriver
-        HashMap<Integer,Integer> poids = new HashMap<>();
-        //Liste des sommets parcourus
-        HashMap<Integer,Integer> list = new HashMap<>();
-        //La distance ini est de 0
+        //PriorityQueue<Pair<Integer,Integer>> queue = new PriorityQueue<>();
+        int[] dis = new int[matrice.size()];
+        int[] prec = new int[matrice.size()];
 
-        poids.put(source,0);
-        // Tous les sommets
         Set<Integer> keys = matrice.keySet();
+        dis[source]=0;
+        Set<Integer> queue = new HashSet<>();
+
         //On met infini dans les chemins non parcourus
         for (int k: keys
         ) {
-            if(k!=source){
-                poids.put(k,Integer.MAX_VALUE);
+            if(k != source){
+                dis[k]=Integer.MAX_VALUE;
             }
+            queue.add(k);
+            tab.put(k, new ArrayDeque<>());
         }
-        int courant = source;
-        // Tant qu'on a pas parcourus tous les sommets
-        while (poids.size() != 0 ){
-            System.out.println("Le courant est : "+ courant);
-            //On recupere les voisins du courant
-            if(matrice.get(source).size() == 0){
-                System.out.println("Le sommet n'a pas de voisins");
-                break;
-            }
+
+
+        while(!queue.isEmpty()){
+            int courant = getMin(queue, dis);
+            if(courant == -1) break;;
             List<Pair<Integer,Integer>> voisins = matrice.get(courant);
-            // Pour chaque voisins on change nos poids de chemin
-            for (Pair<Integer,Integer> v:voisins
-            ) {
-                int v_key = v.getKey();
-                int v_value = v.getValue();
-                int poidsChemin = v_value+poidsCourant;
-                //On change si on ne l'a pas deja parcourus
-                if( !list.containsKey(v_key) && poidsChemin< poids.get(v_key)){
-                    poids.put(v_key,poidsChemin);
-                }
 
+            for (Pair<Integer, Integer> v : voisins) {
+                majDistance(courant, v.getKey(), dis, prec);
             }
-            //on a parcourus ce sommet
-            list.put(courant,poids.get(courant));
-            poids.remove(courant);
-            int min = Integer.MAX_VALUE;
-            //On cherche le sommet suivant (poids minimum)
-            for(Map.Entry<Integer, Integer> entry : poids.entrySet()) {
-
-                int key = entry.getKey();
-                int value = entry.getValue();
-                System.out.println(min);
-                System.out.println(value);
-
-                if(value < min){
-                    min=value;
-                    courant=key;
-                }
-
-            }
-            poidsCourant=min;
         }
-        return list;
+        for (int key: matrice.keySet()) {
+            int s = key;
+            if (prec[key] == 0) continue;
+            while (s != source) {
+                tab.get(key).addFirst(s);
+                s = prec[s];
+            }
+            tab.get(key).addFirst(source);
+        }
+        HashMap<Integer, CheDis> res = new HashMap<>();
+        for (int k: tab.keySet()) {
+            res.put(k, new CheDis(tab.get(k), dis[k]));
+        }
+        return res;
     }
+
+    private int getPoids(int i, int j){
+        List<Pair<Integer,Integer>> voisins = matrice.get(i);
+        for (Pair<Integer,Integer> p:voisins
+             ) {
+            if(j==p.getKey()) return p.getValue();
+        }
+        return 0;
+    }
+
+    private void majDistance(int sCourant, int v, int[] dis, int[] prec) {
+        if (dis[v] > dis[sCourant] + getPoids(sCourant,v)) {
+            dis[v] = dis[sCourant] + getPoids(sCourant,v);
+            prec[v] = sCourant;
+        }
+    }
+
+    private int getMin(Set<Integer> nonMarques, int[] tabDistance) {
+        int min = Integer.MAX_VALUE;
+        int sMin = -1;
+        for (int s : nonMarques) {
+            if (tabDistance[s] < min) {
+                min = tabDistance[s];
+                sMin = s;
+            }
+        }
+        nonMarques.remove(sMin);
+        return sMin;
+    }
+
+
 
 
 
