@@ -2,6 +2,9 @@ package Graph;
 
 import java.util.Deque;
 
+/**
+ * Classe permettant de calculer le chemin et la distance parcourue
+ */
 public class CheDis {
 
     protected Deque<Integer> ch;
@@ -14,6 +17,6 @@ public class CheDis {
 
     @Override
     public String toString() {
-        return (dis != Integer.MAX_VALUE ? ch.toString()+ ", Distance :" +dis : "a pas de chemin");
+        return (dis != Integer.MAX_VALUE ? ch.toString()+ ", Distance :" +dis : " n'a pas de chemin");
     }
 }
